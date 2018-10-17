@@ -1,216 +1,196 @@
 #include "stdafx.h"
-#include <cmath>
 
-
-void BackgroundLogic::ScreenChange(float prevPlayer1X, float prevPlayer2X)
+void BackgroundLogic::screen_change(const float prev_player1_x, const float prev_player2_x) const
 {
-	float leftEdge = 0;
-	float rightEdge = (float)SCREEN_WIDTH - (float)p2TC->width * p2TC->scale;
-	int bottom = SCREEN_HEIGHT - p1TC->height * p1TC->scale;
+	const float left_edge = 0;
+	const auto right_edge = static_cast<float>(SCREEN_WIDTH) - static_cast<float>(p2_tc_->width) * p2_tc_->scale;
+	const int bottom = SCREEN_HEIGHT - p1_tc_->height * p1_tc_->scale;
 
 	//Sets players to the edges of the screen if they move off the background
-	if (p1TC->position.x < leftEdge)
-		p1TC->setXPosition(leftEdge);
-	if (p2TC->position.x >(float)SCREEN_WIDTH - (float)p2TC->width * p2TC->scale)
-		p2TC->setXPosition((float)SCREEN_WIDTH - (float)p2TC->width * p2TC->scale);
-	p1TC->setYPosition(bottom);
-	p2TC->setYPosition(bottom);
+	if (p1_tc_->position.x < left_edge)
+		p1_tc_->set_x_position(left_edge);
+	if (p2_tc_->position.x > right_edge)
+		p2_tc_->set_x_position(right_edge);
+	p1_tc_->set_y_position(bottom);
+	p2_tc_->set_y_position(bottom);
 
-	bool player1WalkLeft = p1SC->isAnimID("walkLeft");
-	bool player1WalkRight = p1SC->isAnimID("walkRight");
-	bool player1Idle = p1SC->isAnimID("idle");
-	bool player2WalkLeft = p2SC->isAnimID("walkLeft");
-	bool player2WalkRight = p2SC->isAnimID("walkRight");
-	bool player2Idle = p2SC->isAnimID("idle");
-	bool player1OffScreen = p1TC->position.x < leftEdge + FLT_EPSILON;
-	bool player2OffScreen = p2TC->position.x >= rightEdge - FLT_EPSILON;
+	const auto player1_walk_left = p1_sc_->is_anim_id("walk left");
+	const auto player1_walk_right = p1_sc_->is_anim_id("walk right");
+	const auto player1_idle = p1_sc_->is_anim_id("idle");
+	const auto player2_walk_left = p2_sc_->is_anim_id("walk left");
+	const auto player2_walk_right = p2_sc_->is_anim_id("walk right");
+	const auto player2_idle = p2_sc_->is_anim_id("idle");
+	const auto player1_is_at_edge = p1_tc_->position.x < left_edge + FLT_EPSILON;
+	auto player2_is_at_edge = p2_tc_->position.x >= right_edge - FLT_EPSILON;
 
-	float playersDistance = (p2TC->position.x - ((float)p2TC->width * p2TC->scale) / 2) - p1TC->position.x + ((float)p1TC->width * p1TC->scale) / 2;
-	bool isMaxRange = playersDistance / ((float)p1TC->width * p1TC->scale) > maxRange;
+	const auto players_distance = (p2_tc_->position.x - (static_cast<float>(p2_tc_->width) * p2_tc_->scale) / 2) -
+		p1_tc_->position.x + (static_cast<float>(p1_tc_->width) * p1_tc_->scale) / 2;
+	const auto is_max_range = players_distance / (static_cast<float>(p1_tc_->width) * p1_tc_->scale) > max_range_;
 	
 	
 
 	// Stretch Assets
 	if (
-		player1OffScreen && p2TC->position.x >= (float)SCREEN_WIDTH - (float)p2TC->width * p2TC->scale
-		&& (player1WalkLeft || player1Idle)
-		&& (player2WalkRight || player2Idle)
-		&& !(player1Idle && player2Idle)
-		&& !isMaxRange && p1TC->scale > SPRITE_SCALING_TARGET
+		player1_is_at_edge && player2_is_at_edge
+		&& (player1_walk_left || player1_idle)
+		&& (player2_walk_right || player2_idle)
+		&& !(player1_idle && player2_idle)
+		&& !is_max_range && p1_tc_->scale > SPRITE_SCALING_TARGET
 		)
 	{
-		/*std::cout << "EXPAND" << std::endl; */
-		if (player1WalkLeft && player2WalkRight)
-		{
-			if (player1VelocityScaleDifference > 0)
-				scrollScreenLeft(player1VelocityScaleDifference * p1TC->speed);
-			if (player2VelocityScaleDifference > 0)
-				scrollScreenRight(player2VelocityScaleDifference * p2TC->speed);
-			stretchAssets((player1VelocityScale * p1TC->speed + player2VelocityScale * p2TC->speed));
-		}
-		if (player1WalkLeft && player2Idle)
-		{
-			scrollScreenLeft(player1VelocityScale * p1TC->speed );
-			stretchAssets(player1VelocityScale * p1TC->speed);
-		}
-		if (player2WalkRight && player1Idle)
-		{
-			scrollScreenRight(player2VelocityScale * p2TC->speed );
-			stretchAssets(player2VelocityScale * p2TC->speed );
-		}
+		auto stretch_speed = 0;
+		if (player1_walk_left)
+			stretch_speed += player1_velocity_scale_ * p1_tc_->speed;
+		if (player2_walk_right)
+			stretch_speed += player2_velocity_scale_ * p2_tc_->speed;
+		stretch_assets(stretch_speed);
+		// checks if its scrolled too far
+		scroll_screen_left(0);
 
 	}
 	//Scroll Background Left
 	else if (
-			player1OffScreen && player1WalkLeft 
-			&& (!(p2TC->position.x >= (float)SCREEN_WIDTH - (float)p2TC->width * p2TC->scale - FLT_EPSILON) || !player2WalkRight)
+			player1_is_at_edge && player1_walk_left 
+			&& (!player2_is_at_edge || !player2_walk_right)
 			)
 	{
-		/*std::cout << "SCROLL LEFT" << std::endl;*/
-		if (player2Idle && !isMaxRange)
+		if (player2_idle && !is_max_range)
 		{
-			scrollScreenLeft(player1VelocityScale * p1TC->speed);
-			p2TC->setXPosition(prevPlayer2X + player1VelocityScale * p1TC->speed * p1TC->scale / SPRITE_SCALING);
+			scroll_screen_left(player1_velocity_scale_ * p1_tc_->speed);
+			p2_tc_->set_x_position(prev_player2_x + player1_velocity_scale_ * p1_tc_->speed * p1_tc_->scale / SPRITE_SCALING);
 		}
-		if (player2WalkLeft)
+		if (player2_walk_left)
 		{
-			scrollScreenLeft(player1VelocityScale * p1TC->speed);
-			if (prevPlayer2X - player2VelocityScaleDifference * p1TC->speed * p1TC->scale / SPRITE_SCALING < (float)SCREEN_WIDTH - (float)p2TC->width * p2TC->scale)
+			scroll_screen_left(player1_velocity_scale_ * p1_tc_->speed);
+			if (prev_player2_x - player2_velocity_scale_difference_ * p1_tc_->speed * p1_tc_->scale / SPRITE_SCALING < right_edge)
 			{
-				p2TC->setXPosition(prevPlayer2X - player2VelocityScaleDifference * p1TC->speed * p1TC->scale / SPRITE_SCALING);
+				p2_tc_->set_x_position(prev_player2_x - player2_velocity_scale_difference_ * p1_tc_->speed * p1_tc_->scale / SPRITE_SCALING);
 			}
 			else
-				p2TC->setXPosition((float)SCREEN_WIDTH - (float)p2TC->width * p2TC->scale);
-			if (player2VelocityScaleDifference > 0)
-				shrinkAssets(player2VelocityScaleDifference * p2TC->speed);
-			if (player1VelocityScaleDifference > 0 && p2TC->position.x >= (float)SCREEN_WIDTH - (float)p2TC->width * p2TC->scale && !isMaxRange)
-				stretchAssets(player1VelocityScaleDifference * p1TC->speed);
+				p2_tc_->set_x_position(right_edge);
+			player2_is_at_edge = p2_tc_->position.x >= right_edge - FLT_EPSILON;
+
+			if (player2_velocity_scale_difference_ > 0)
+				shrink_assets(player2_velocity_scale_difference_ * p2_tc_->speed);
+			if (player1_velocity_scale_difference_ > 0 && player2_is_at_edge && !is_max_range)
+				stretch_assets(player1_velocity_scale_difference_ * p1_tc_->speed);
 		}
-		if (player2WalkRight && !isMaxRange)
+		if (player2_walk_right && !is_max_range)
 		{
-			scrollScreenLeft(player1VelocityScale * p1TC->speed);
-			p2TC->setXPosition(p2TC->position.x + player1VelocityScale * p1TC->speed * p1TC->scale / SPRITE_SCALING);
+			scroll_screen_left(player1_velocity_scale_ * p1_tc_->speed);
+			p2_tc_->set_x_position(p2_tc_->position.x + player1_velocity_scale_ * p1_tc_->speed * p1_tc_->scale / SPRITE_SCALING);
 		}
 	}
 	// Scroll Background Right
 	else if (
-			(p2TC->position.x >= (float)SCREEN_WIDTH - (float)p2TC->width * p2TC->scale) && player2WalkRight
-			&& (!player1OffScreen || !player1WalkLeft)
+			player2_is_at_edge && player2_walk_right
+			&& (!player1_is_at_edge || !player1_walk_left)
 			)
 	{
-		/*std::cout << "SCROLL RIGHT" << std::endl;*/
-		if (player1Idle && !isMaxRange)
+		auto scroll_increment = 0;
+		if (player1_idle && !is_max_range)
 		{
-			scrollScreenRight(player2VelocityScale * p2TC->speed);
-			p1TC->setXPosition(prevPlayer1X - player2VelocityScale * p2TC->speed * p1TC->scale / SPRITE_SCALING);
+			scroll_increment = player2_velocity_scale_ * p2_tc_->speed;
+			p1_tc_->set_x_position(prev_player1_x - player2_velocity_scale_ * p2_tc_->speed * p1_tc_->scale / SPRITE_SCALING);
 		}
-		if (player1WalkRight)
+		if (player1_walk_right)
 		{
-			scrollScreenRight(player1VelocityScale * p1TC->speed);
-			if (prevPlayer1X + player1VelocityScaleDifference * p2TC->speed * p1TC->scale / SPRITE_SCALING > leftEdge)
+			scroll_increment = player1_velocity_scale_ * p1_tc_->speed;
+
+			if (prev_player1_x + player1_velocity_scale_difference_ * p2_tc_->speed * p1_tc_->scale / SPRITE_SCALING > left_edge)
 			{
-				p1TC->setXPosition(prevPlayer1X);
-				if (p1TC->scale >= SPRITE_SCALING)
-					p1TC->setXPosition(prevPlayer1X + player1VelocityScaleDifference * p2TC->speed * p1TC->scale / SPRITE_SCALING);
+				p1_tc_->set_x_position(prev_player1_x);
+				if (p1_tc_->scale >= SPRITE_SCALING)
+					p1_tc_->set_x_position(prev_player1_x + player1_velocity_scale_difference_ * p2_tc_->speed * p1_tc_->scale / SPRITE_SCALING);
 			}
 			else
-				p1TC->setXPosition(leftEdge);
-			if (player1VelocityScaleDifference > 0)
-				shrinkAssets(player1VelocityScaleDifference * p1TC->speed);
-			if (player2VelocityScaleDifference > 0 && p1TC->position.x < leftEdge + FLT_EPSILON && !isMaxRange)
-				stretchAssets(player2VelocityScaleDifference * p2TC->speed);
+				p1_tc_->set_x_position(left_edge);
+			if (player1_velocity_scale_difference_ > 0)
+				shrink_assets(player1_velocity_scale_difference_ * p1_tc_->speed);
+			if (player2_velocity_scale_difference_ > 0 && player1_is_at_edge && !is_max_range)
+				stretch_assets(player2_velocity_scale_difference_ * p2_tc_->speed);
 		}
-		if (player1WalkLeft && !isMaxRange)
+		if (player1_walk_left && !is_max_range)
 		{
-			scrollScreenRight(player1VelocityScale * p1TC->speed);
-			p1TC->setXPosition(p1TC->position.x - p2CC->getVelocityScale() * p2TC->speed * p1TC->scale / SPRITE_SCALING);
+			scroll_increment = player2_velocity_scale_ * p2_tc_->speed;
+			p1_tc_->set_x_position(p1_tc_->position.x - player2_velocity_scale_ * p2_tc_->speed * p1_tc_->scale / SPRITE_SCALING);
 		}
+		scroll_screen_right( scroll_increment );
 	}
 	// Shrink Assets
 	else if (
-			(player1WalkRight && player2Idle
-			|| player2WalkLeft && player1Idle
-			|| player1WalkRight && player2WalkLeft)
-			&& p1TC->scale < SPRITE_SCALING
+			(player1_walk_right && player2_idle
+			|| player2_walk_left && player1_idle
+			|| player1_walk_right && player2_walk_left)
+			&& p1_tc_->scale < SPRITE_SCALING
 			)
 	{
-		/*std::cout << "SHRINK" << std::endl;*/
-		if (player1WalkRight && player2WalkLeft)
-		{
-			shrinkAssets((player1VelocityScale * p1TC->speed + player1VelocityScale * p2TC->speed));
-			if (player1VelocityScaleDifference > 0)
-				scrollScreenRight(player1VelocityScaleDifference * p1TC->speed);
-			if (player2VelocityScaleDifference > 0)
-				scrollScreenLeft(player2VelocityScaleDifference * p2TC->speed);
-		}
-		if (player1WalkRight && player2Idle)
-		{
-			shrinkAssets((player1VelocityScale * p1TC->speed));
-			scrollScreenRight(player1VelocityScale * p1TC->speed);
-		}
-		if (player2WalkLeft && player1Idle)
-		{
-			shrinkAssets((player2VelocityScale * p2TC->speed));
-			scrollScreenLeft(player2VelocityScale * p2TC->speed);
-		}
+		auto shrink_speed = 0;
+		if (player1_walk_right)
+			shrink_speed += player1_velocity_scale_ * p1_tc_->speed;
+		if (player2_walk_left)
+			shrink_speed += player2_velocity_scale_ * p2_tc_->speed;
+
+		shrink_assets(shrink_speed);
 	}
 
 	//Collision Detection
-	if (Collision::AABB(p1SC->cloneAndReturnDestRect(p1TC->width / 2), p2SC->cloneAndReturnDestRect(p2TC->width / 2)))
+	//TODO: delete and move to collidercomponent.h and added code in the combat class
+	if (false)
 	{
 		
-		if (player1VelocityScaleDifference > 0)
+		if (player1_velocity_scale_difference_ > 0)
 		{
-			if (player2WalkRight && p2TC->position.x + player1VelocityScaleDifference * p1TC->speed < rightEdge)
-				p2TC->setXPosition(p2TC->position.x + player1VelocityScaleDifference * p1TC->speed);
-			if (prevPlayer2X + player1VelocityScaleDifference * p1TC->speed < rightEdge)
+			if (player2_walk_right && p2_tc_->position.x + player1_velocity_scale_difference_ * p1_tc_->speed < right_edge)
+				p2_tc_->set_x_position(p2_tc_->position.x + player1_velocity_scale_difference_ * p1_tc_->speed);
+			if (prev_player2_x + player1_velocity_scale_difference_ * p1_tc_->speed < right_edge)
 			{
-				p2TC->setXPosition(prevPlayer2X + player1VelocityScaleDifference * p1TC->speed);
-				p1TC->setXPosition(prevPlayer1X);
+				p2_tc_->set_x_position(prev_player2_x + player1_velocity_scale_difference_ * p1_tc_->speed);
+				p1_tc_->set_x_position(prev_player1_x);
 			}
-			if (player1Idle && prevPlayer1X - player1VelocityScaleDifference * p2TC->speed > leftEdge)
+			if (player1_idle && prev_player1_x - player1_velocity_scale_difference_ * p2_tc_->speed > left_edge)
 			{
-				p1TC->setXPosition(prevPlayer1X - player1VelocityScaleDifference * p2TC->speed);
-				p2TC->setXPosition(prevPlayer2X);
+				p1_tc_->set_x_position(prev_player1_x - player1_velocity_scale_difference_ * p2_tc_->speed);
+				p2_tc_->set_x_position(prev_player2_x);
 			}
-			if (player1Idle && p1TC->position.x < leftEdge + player1VelocityScaleDifference * p2TC->speed)
+			if (player1_idle && p1_tc_->position.x < left_edge + player1_velocity_scale_difference_ * p2_tc_->speed)
 			{
-				p1TC->setXPosition(prevPlayer1X);
-				p2TC->setXPosition(prevPlayer2X);
-				scrollScreenLeft(player1VelocityScaleDifference * p2TC->speed);
+				p1_tc_->set_x_position(prev_player1_x);
+				p2_tc_->set_x_position(prev_player2_x);
+				scroll_screen_left(player1_velocity_scale_difference_ * p2_tc_->speed);
 			}
-			if (p2TC->position.x > rightEdge - player1VelocityScaleDifference * p1TC->speed)
+			if (p2_tc_->position.x > right_edge - player1_velocity_scale_difference_ * p1_tc_->speed)
 			{
-				p1TC->setXPosition(prevPlayer1X);
-				p2TC->setXPosition(prevPlayer2X);
-				scrollScreenRight(player1VelocityScaleDifference * p1TC->speed);
+				p1_tc_->set_x_position(prev_player1_x);
+				p2_tc_->set_x_position(prev_player2_x);
+				scroll_screen_right(player1_velocity_scale_difference_ * p1_tc_->speed);
 			}
 		}
-		if (player2VelocityScaleDifference > 0)
+		if (player2_velocity_scale_difference_ > 0)
 		{
-			if(player1WalkLeft && p1TC->position.x - player2VelocityScaleDifference * p2TC->speed > leftEdge)
-				p1TC->setXPosition(p1TC->position.x - player2VelocityScaleDifference * p2TC->speed);
-			if (prevPlayer1X - player2VelocityScaleDifference * p2TC->speed > leftEdge)
+			if(player1_walk_left && p1_tc_->position.x - player2_velocity_scale_difference_ * p2_tc_->speed > left_edge)
+				p1_tc_->set_x_position(p1_tc_->position.x - player2_velocity_scale_difference_ * p2_tc_->speed);
+			if (prev_player1_x - player2_velocity_scale_difference_ * p2_tc_->speed > left_edge)
 			{
-				p1TC->setXPosition(prevPlayer1X - player2VelocityScaleDifference * p2TC->speed);
-				p2TC->setXPosition(prevPlayer2X);
+				p1_tc_->set_x_position(prev_player1_x - player2_velocity_scale_difference_ * p2_tc_->speed);
+				p2_tc_->set_x_position(prev_player2_x);
 			}
-			if (player2Idle && prevPlayer2X + player2VelocityScaleDifference * p1TC->speed < rightEdge)
+			if (player2_idle && prev_player2_x + player2_velocity_scale_difference_ * p1_tc_->speed < right_edge)
 			{
-				p2TC->setXPosition(prevPlayer2X + player2VelocityScale * p1TC->speed);
-				p1TC->setXPosition(prevPlayer1X);
+				p2_tc_->set_x_position(prev_player2_x + player2_velocity_scale_ * p1_tc_->speed);
+				p1_tc_->set_x_position(prev_player1_x);
 			}
-			if (player2Idle && p2TC->position.x > rightEdge - player2VelocityScaleDifference * p1TC->speed)
+			if (player2_idle && p2_tc_->position.x > right_edge - player2_velocity_scale_difference_ * p1_tc_->speed)
 			{
-				p1TC->setXPosition(prevPlayer1X);
-				p2TC->setXPosition(prevPlayer2X);
-				scrollScreenRight(player2VelocityScaleDifference * p2TC->speed);
+				p1_tc_->set_x_position(prev_player1_x);
+				p2_tc_->set_x_position(prev_player2_x);
+				scroll_screen_right(player2_velocity_scale_difference_ * p2_tc_->speed);
 			}
-			if (p1TC->position.x < leftEdge + player2VelocityScaleDifference * p1TC->speed)
+			if (p1_tc_->position.x < left_edge + player2_velocity_scale_difference_ * p1_tc_->speed)
 			{
-				p1TC->setXPosition(prevPlayer1X);
-				p2TC->setXPosition(prevPlayer2X);
-				scrollScreenLeft(player2VelocityScaleDifference * p2TC->speed);
+				p1_tc_->set_x_position(prev_player1_x);
+				p2_tc_->set_x_position(prev_player2_x);
+				scroll_screen_left(player2_velocity_scale_difference_ * p2_tc_->speed);
 			}
 		}
 			
@@ -218,93 +198,91 @@ void BackgroundLogic::ScreenChange(float prevPlayer1X, float prevPlayer2X)
 
 }
 
-void BackgroundLogic::scrollScreenRight(float scrollIncrement)
+void BackgroundLogic::scroll_screen_right(const float scroll_increment) const
 {
-	bgTC->setXPosition(bgTC->position.x - scrollIncrement * p1TC->scale / SPRITE_SCALING);
-	/*if (bgTC->position.x < -bgTC->width * bgTC->scale)
-		bgTC->setXPosition(0);*/
+	bg_tc_->set_x_position(bg_tc_->position.x - scroll_increment * p1_tc_->scale / SPRITE_SCALING);
+	if (bg_tc_->position.x < -bg_tc_->width * bg_tc_->scale)
+		bg_tc_->set_x_position(0);
 }
 
-void BackgroundLogic::scrollScreenLeft(float scrollIncrement)
+void BackgroundLogic::scroll_screen_left(const float scroll_increment) const
 {
-	bgTC->setXPosition(bgTC->position.x + scrollIncrement * p1TC->scale / SPRITE_SCALING);
-	/*if (bgTC->position.x > bgTC->width * bgTC->scale)
-		bgTC->setXPosition(0);*/
+	bg_tc_->set_x_position(bg_tc_->position.x + scroll_increment * p1_tc_->scale / SPRITE_SCALING);
+	if (bg_tc_->position.x > bg_tc_->width * bg_tc_->scale)
+		bg_tc_->set_x_position(0);
 }
 
-void BackgroundLogic::stretchAssets(float stretch)
+void BackgroundLogic::stretch_assets(const float stretch) const
 {
 	// the difference between scale bounds / the possible distance traveled by a single character * stretch speed
-	float playerScRange = (SPRITE_SCALING - SPRITE_SCALING_TARGET) / (float)(SCREEN_WIDTH - SPRITE_SCALED) * -stretch * p1TC->scale / SPRITE_SCALING;
-	float backgroundScRange = (BACKGROUND_SCALING - BACKGROUND_SCALING_TARGET) / (float)(SCREEN_WIDTH - SPRITE_SCALED) * -stretch * bgTC->scale / BACKGROUND_SCALING;
+	const auto player_sc_range = (SPRITE_SCALING - SPRITE_SCALING_TARGET) / static_cast<float>(SCREEN_WIDTH - SPRITE_SCALED) * -stretch * p1_tc_->scale / SPRITE_SCALING;
+	const auto background_sc_range = (BACKGROUND_SCALING - BACKGROUND_SCALING_TARGET) / static_cast<float>(SCREEN_WIDTH - SPRITE_SCALED) * -stretch * bg_tc_->scale / BACKGROUND_SCALING;
 
-	p1TC->setScaling(std::max(SPRITE_SCALING_TARGET, p1TC->scale + playerScRange ));
+	p1_tc_->set_scaling(std::max(SPRITE_SCALING_TARGET, p1_tc_->scale + player_sc_range ));
 
-	float scalingOffsetX = p2TC->width * p2TC->scale - (p2TC->scale + playerScRange) * p2TC->width;
+	auto scaling_offset_x = p2_tc_->width * p2_tc_->scale - (p2_tc_->scale + player_sc_range) * p2_tc_->width;
+
+	const auto player1_stretch = p1_sc_->is_anim_id("walk left") && p2_sc_->is_anim_id("idle");
+	const auto player2_stretch = p2_sc_->is_anim_id("walk right") && p1_sc_->is_anim_id("idle");
 
 	
-	if (SPRITE_SCALING_TARGET < p2TC->scale)
-		p2TC->setXPosition(p2TC->position.x + scalingOffsetX * (SPRITE_LENGTH * p2TC->scale) / (SPRITE_LENGTH * std::max(SPRITE_SCALING_TARGET, p2TC->scale + playerScRange) ) );
+	if (SPRITE_SCALING_TARGET < p2_tc_->scale)
+		p2_tc_->set_x_position(p2_tc_->position.x + scaling_offset_x + 1 );
 
-	p2TC->setScaling(std::max(SPRITE_SCALING_TARGET, p2TC->scale + playerScRange));
+	p2_tc_->set_scaling(std::max(SPRITE_SCALING_TARGET, p2_tc_->scale + player_sc_range));
 
-	scalingOffsetX = bgTC->width * bgTC->scale - (bgTC->scale + backgroundScRange) * bgTC->width;
+	scaling_offset_x = bg_tc_->width * bg_tc_->scale - (bg_tc_->scale + background_sc_range) * bg_tc_->width;
+	
+	bg_tc_->set_scaling(std::max(BACKGROUND_SCALING_TARGET, bg_tc_->scale + background_sc_range));
 
-	const float scalingOffsetY = bgTC->height * bgTC->scale - (bgTC->scale + backgroundScRange) * bgTC->height;
+	auto center_of_stretch = SCREEN_WIDTH * player1_velocity_scale_ * p1_tc_->speed / (player1_velocity_scale_ * p1_tc_->speed + player2_velocity_scale_ * p2_tc_->speed);
 
-	bgTC->setScaling(std::min(BACKGROUND_SCALING, bgTC->scale + backgroundScRange));
+	if (player2_stretch)
+		center_of_stretch = 0;
+	if (player1_stretch)
+		center_of_stretch = SCREEN_WIDTH;
 
-	float cosAngleBackground = std::abs( (stretch * (-bgTC->position.x + SCREEN_HALF_WIDTH) ) * (SCREEN_HALF_WIDTH * (BACKGROUND_WIDTH * bgTC->scale  ) )
-		/ (std::pow(std::pow(stretch * (-bgTC->position.x + SCREEN_HALF_WIDTH), 2), 0.5) * std::pow(std::pow(scalingOffsetX * (BACKGROUND_WIDTH * bgTC->scale - SCREEN_HALF_WIDTH - std::abs(bgTC->position.x)), 2) + std::pow(scalingOffsetY * bgTC->position.y, 2), 0.5) ) );
-
-	std::cout << "cosBackgroundAngle: " << cosAngleBackground << std::endl;
-	// to account for stretching position changes
-
-	// the difference in scaling from new and old backgrounds / the center of stretch = goddamn stretching miracle
-	if (BACKGROUND_SCALING_TARGET < bgTC->scale)
-		bgTC->setXPosition(
-			bgTC->position.x + scalingOffsetX * (-bgTC->position.x + SCREEN_HALF_WIDTH)
-			/ (BACKGROUND_WIDTH * bgTC->scale)
+	// the difference in scaling from new and old backgrounds * the center of stretch = goddamn stretching miracle
+	if (BACKGROUND_SCALING_TARGET < bg_tc_->scale)
+		bg_tc_->set_x_position(
+			bg_tc_->position.x + scaling_offset_x * (-bg_tc_->position.x + center_of_stretch) / (BACKGROUND_WIDTH * bg_tc_->scale)
 		);
 }
 
-void BackgroundLogic::shrinkAssets(float shrink)
+void BackgroundLogic::shrink_assets(const float shrink) const
 {
 	// the difference between scale bounds / the possible distance traveled by a single character * stretch speed
-	float playerScRange = (SPRITE_SCALING - SPRITE_SCALING_TARGET) / (float)(SCREEN_WIDTH - SPRITE_SCALED) * shrink * p1TC->scale / SPRITE_SCALING;
-	float backgroundScRange = (BACKGROUND_SCALING - BACKGROUND_SCALING_TARGET) / (float)(SCREEN_WIDTH - SPRITE_SCALED) * shrink * bgTC->scale / BACKGROUND_SCALING;
+	const auto player_sc_range = (SPRITE_SCALING - SPRITE_SCALING_TARGET) / static_cast<float>(SCREEN_WIDTH - SPRITE_SCALED) * shrink * p1_tc_->scale / SPRITE_SCALING;
+	const auto background_sc_range = (BACKGROUND_SCALING - BACKGROUND_SCALING_TARGET) / static_cast<float>(SCREEN_WIDTH - SPRITE_SCALED) * shrink * bg_tc_->scale / BACKGROUND_SCALING;
 
-	p1TC->setScaling(std::min(SPRITE_SCALING, p1TC->scale + playerScRange));
+	const auto player1_shrink = p1_sc_->is_anim_id("walk right") && p2_sc_->is_anim_id("idle");
+	const auto player2_shrink = p2_sc_->is_anim_id("walk left") && p1_sc_->is_anim_id("idle");
 
-	float scalingOffsetX = p2TC->width * p2TC->scale - (p2TC->scale + playerScRange) * p2TC->width;
+	p1_tc_->set_scaling(std::min(SPRITE_SCALING, p1_tc_->scale + player_sc_range));
+
+	auto scaling_offset_x = p2_tc_->width * p2_tc_->scale - (p2_tc_->scale + player_sc_range) * p2_tc_->width;
 
 
 	// to account for stretching position changes
-	if (SPRITE_SCALING_TARGET < p2TC->scale)
-		p2TC->setXPosition(p2TC->position.x + scalingOffsetX * (SPRITE_LENGTH * p2TC->scale ) / (SPRITE_LENGTH * std::min(SPRITE_SCALING, p2TC->scale + playerScRange ) ) );
+	if (SPRITE_SCALING_TARGET < p2_tc_->scale)
+		p2_tc_->set_x_position(p2_tc_->position.x + scaling_offset_x * (SPRITE_LENGTH * p2_tc_->scale ) / (SPRITE_LENGTH * std::min(SPRITE_SCALING, p2_tc_->scale + player_sc_range ) ) );
 
-	p2TC->setScaling(std::min(SPRITE_SCALING, p2TC->scale + playerScRange));
+	p2_tc_->set_scaling(std::min(SPRITE_SCALING, p2_tc_->scale + player_sc_range));
 
-	scalingOffsetX = bgTC->width * bgTC->scale - (bgTC->scale + backgroundScRange) * bgTC->width;
+	scaling_offset_x = bg_tc_->width * bg_tc_->scale - (bg_tc_->scale + background_sc_range) * bg_tc_->width;
 
-	float scalingOffsetY = bgTC->height * bgTC->scale - (bgTC->scale + backgroundScRange) * bgTC->height;
+	bg_tc_->set_scaling(std::min(BACKGROUND_SCALING, bg_tc_->scale + background_sc_range));
 
-	bgTC->setScaling(std::min(BACKGROUND_SCALING, bgTC->scale + backgroundScRange));
+	auto center_of_stretch = SCREEN_WIDTH * player1_velocity_scale_ * p1_tc_->speed / (player1_velocity_scale_ * p1_tc_->speed + player2_velocity_scale_ * p2_tc_->speed);
 
-	//float cosAngleBackground = ((-bgTC->position.x) * bgTC->scale) * ((-bgTC->position.x + BACKGROUND_WIDTH) * bgTC->scale)
-	//	/ (std::pow(std::pow((-bgTC->position.x) *bgTC->scale, 2), 0.5) * std::pow(std::pow((-bgTC->position.x + BACKGROUND_WIDTH) * bgTC->scale, 2) + std::pow((BACKGROUND_HEIGHT - SCREEN_HEIGHT) *bgTC->scale, 2), 0.5));
-	
-	float cosAngleBackground = std::abs(((-bgTC->position.x + SCREEN_HALF_WIDTH)) * (scalingOffsetX * ( std::abs(bgTC->position.x) - BACKGROUND_WIDTH * bgTC->scale))
-								/ (std::pow(std::pow(shrink * (-bgTC->position.x + SCREEN_HALF_WIDTH), 2), 0.5) *
-									std::pow(std::pow(scalingOffsetX * (BACKGROUND_WIDTH * bgTC->scale - SCREEN_HALF_WIDTH - std::abs(bgTC->position.x + bgTC->scale * bgTC->height)), 2)
-										+ std::pow(scalingOffsetY * bgTC->position.y, 2), 0.5)));
+	if (player2_shrink)
+		center_of_stretch = 0;
+	if (player1_shrink)
+		center_of_stretch = SCREEN_WIDTH;
 
-	std::cout << "cosBackgroundAngle: " << cosAngleBackground << std::endl;
-
-	// the difference in scaling from new and old backgrounds / the center of stretch = goddamn shrinking miracle
-	if (BACKGROUND_SCALING > bgTC->scale )
-		bgTC->setXPosition(
-			bgTC->position.x + scalingOffsetX * (-bgTC->position.x + SCREEN_HALF_WIDTH)
-			/ (BACKGROUND_WIDTH * bgTC->scale)
+	// the difference in scaling from new and old backgrounds * the center of stretch = goddamn stretching miracle
+	if (BACKGROUND_SCALING_TARGET < bg_tc_->scale)
+		bg_tc_->set_x_position(
+			bg_tc_->position.x + scaling_offset_x * (-bg_tc_->position.x + center_of_stretch) / (BACKGROUND_WIDTH * bg_tc_->scale)
 		);
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -158,30 +158,50 @@
     <ClInclude Include="Attack.h" />
     <ClInclude Include="BackgroundComponent.h" />
     <ClInclude Include="BackgroundLogic.h" />
+    <ClInclude Include="Box.h" />
+    <ClInclude Include="BoxComponent.h" />
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Combat.h" />
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="ControllerCommands.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="ControllerComponent.h" />
+    <ClInclude Include="ControllerConstants.h" />
+    <ClInclude Include="CursorComponent.h" />
     <ClInclude Include="ECS.h" />
     <ClInclude Include="EndOfRoundLogic.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="KeyboardHandler.h" />
+    <ClInclude Include="LinkCommands.h" />
+    <ClInclude Include="OptionLinks.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="MenuComponent.h" />
     <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="Options.h" />
+    <ClInclude Include="OptionsComponent.h" />
+    <ClInclude Include="OptionsConstants.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TransformComponent.h" />
+    <ClInclude Include="TTFComponent.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="BackgroundLogic.cpp" />
-    <ClCompile Include="collision.cpp" />
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Combat.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="EndOfRoundLogic.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="LoserGameForLosers.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -195,9 +215,19 @@
     <Image Include="Background.png" />
     <Image Include="backgroundTake2.png" />
     <Image Include="backgroundTake3.png" />
+    <Image Include="backgroundTake4.png" />
+    <Image Include="Background_take5.png" />
+    <Image Include="cursor.png" />
     <Image Include="Fighter.png" />
     <Image Include="Fighter_full.png" />
     <Image Include="hipsterBackground.png" />
+    <Image Include="LongArms_full.png" />
+    <Image Include="square_full.png" />
+    <Image Include="textbox.png" />
+    <Image Include="Title_screen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="GIL_____.TTF" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

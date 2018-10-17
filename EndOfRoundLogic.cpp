@@ -2,99 +2,95 @@
 #include "EndOfRoundLogic.h"
 #include <cmath>
 
-bool EndOfRoundLogic::CheckWinner()
+bool EndOfRoundLogic::check_winner() const
 {
-	bool isWinner = false;
-	//there's probably a better way
-	float playerDistance = pPlayerTC->position.x - oPlayerTC->position.x;
-	float priorityPlayerOperator = playerDistance / std::abs(playerDistance);
+	auto is_winner = false;
 
-	float scaledPlayer = pPlayerTC->scale * SPRITE_LENGTH;
+	const auto scaled_player = p_player_tc_->scale * SPRITE_LENGTH;
 
-	float priorityPlayerWhifDistance = pPlayerPC->chosenAttack.whifDistance * pPlayerTC->scale * pPlayerTC->width;
-	float otherPlayerWhifDistance = oPlayerPC->chosenAttack.whifDistance * oPlayerTC->scale * pPlayerTC->width;
-
-	if (checOutRightVictor(pPlayerPC->chosenAttack, oPlayerPC->chosenAttack))
-		isWinner = true;
+	if (check_for_out_right_victor(p_player_pc_->chosen_attack, o_player_pc_->chosen_attack))
+		is_winner = true;
 	else
 	{
-		if (checkAttackInRange(oPlayerPC->chosenAttack, pPlayerPC->chosenAttack.whifDistance * scaledPlayer))
+		// simulates the priority player whiffing its attack and doing a re-check to see if the other player wins on the whiff
+		if (check_attack_in_range(o_player_pc_->chosen_attack, p_player_pc_->chosen_attack.whiff_distance * scaled_player))
 		{
-			cleanUpRound(oPlayerPC, pPlayerPC);
-			isWinner = true;
+			clean_up_round(o_player_pc_);
+			is_winner = true;
 		}
 	}
-	return isWinner;
+	return is_winner;
 }
 
-bool EndOfRoundLogic::CheckMatchWinner()
+bool EndOfRoundLogic::check_match_winner() const
 {
-	bool isMatchWinner = false;
-	if (pPlayerPC->numWins == ROUNDWIN)
-		isMatchWinner = true;
-	if (oPlayerPC->numWins == ROUNDWIN)
-		isMatchWinner = true;
-	return isMatchWinner;
+	auto is_match_winner = false;
+	if (p_player_pc_->num_wins == ROUNDWIN)
+		is_match_winner = true;
+	if (o_player_pc_->num_wins == ROUNDWIN)
+		is_match_winner = true;
+	return is_match_winner;
 }
 
-bool EndOfRoundLogic::checOutRightVictor(Attack pPAtt, Attack oPAtt)
+bool EndOfRoundLogic::check_for_out_right_victor(const Attack p_p_att, const Attack o_p_att) const
 {
-	bool outRightVictor = false;
+	auto out_right_victor = false;
 
-	if ( (checkAttackInRange(pPAtt) || checkAttackInRange(oPAtt)) && pPAtt.animID == checkAttackWinner(pPAtt, oPAtt).animID)
-	{
-		cleanUpRound(pPlayerPC, oPlayerPC);
-		outRightVictor = true;
+	// checks for an exception where the other players jump kick is shorter than the whip of the priority player
+	const auto short_jump_kick_exception = p_p_att.attack_id == "whip" && o_p_att.attack_id == "jump kick" && !check_attack_in_range(o_p_att);
+
+	//checks if either attack is in range and if the priority player wins the exchange
+	if ( (check_attack_in_range(p_p_att) || check_attack_in_range(o_p_att)) && p_p_att.attack_id == check_attack_winner(p_p_att, o_p_att).attack_id)
+	{	
+		clean_up_round(p_player_pc_);
+		out_right_victor = true;
 	}
-	else if ( (checkAttackInRange(pPAtt) || checkAttackInRange(oPAtt)) && oPAtt.animID == checkAttackWinner(pPAtt, oPAtt).animID)
+	else if ( (check_attack_in_range(p_p_att) || check_attack_in_range(o_p_att)) && o_p_att.attack_id == check_attack_winner(p_p_att, o_p_att).attack_id)
 	{
-		cleanUpRound(oPlayerPC, pPlayerPC);
-		outRightVictor = true;
+		if(!short_jump_kick_exception)
+		{
+			clean_up_round(o_player_pc_);
+			out_right_victor = true;
+		}
 	}
-	return outRightVictor;
+	return out_right_victor;
 }
 
-bool EndOfRoundLogic::checkAttackInRange(Attack att)
+bool EndOfRoundLogic::check_attack_in_range(const Attack att) const
 {
-	float playerDistance = pPlayerTC->position.x - oPlayerTC->position.x;
-	float attRange = att.Range * pPlayerTC->width * pPlayerTC->scale;
+	const auto player_distance = p_player_pc_->get_player_distance() - o_player_pc_->get_player_distance();
+	const auto att_range = att.range * p_player_tc_->width * p_player_tc_->scale;
 
-	return attRange >= std::abs(playerDistance);
+	return att_range >= std::abs(player_distance);
 }
 
-bool EndOfRoundLogic::checkAttackInRange(Attack att, float updatedPostion)
+bool EndOfRoundLogic::check_attack_in_range(const Attack att, const float updated_position) const
 {
-	float playerDistance = pPlayerTC->position.x - oPlayerTC->position.x;
-	float attRange = att.Range * pPlayerTC->width * pPlayerTC->scale;
+	const auto player_distance = p_player_pc_->get_player_distance() - o_player_pc_->get_player_distance();
+	const auto att_range = att.range * p_player_tc_->width * p_player_tc_->scale;
 
-	return attRange >= std::abs(playerDistance) - updatedPostion;
+	return att_range >= std::abs(player_distance) - updated_position;
 }
 
 
-
-Attack EndOfRoundLogic::checkAttackWinner(Attack ppAtt, Attack opAtt)
+Attack EndOfRoundLogic::check_attack_winner(const Attack p_p_att, const Attack o_p_att)
 {
-	if (ppAtt.animID == opAtt.animID)
-		return ppAtt;
-	if (ppAtt.animID == "whip")
+	auto winner = p_p_att;
+
+	if (p_p_att.attack_id == "whip")
 	{
-		if (opAtt.animID == "jump kick")
-			return opAtt;
-		else
-			return ppAtt;
+		if (o_p_att.attack_id == "jump kick")
+			winner = o_p_att;
 	}
-	if (ppAtt.animID == "jump kick")
+	if (p_p_att.attack_id == "jump kick")
 	{
-		if (opAtt.animID == "grab")
-			return opAtt;
-		else
-			return ppAtt;
+		if (o_p_att.attack_id == "grab")
+			winner = o_p_att;
 	}
-	if (ppAtt.animID == "grab")
+	if (p_p_att.attack_id == "grab")
 	{
-		if (opAtt.animID == "whip")
-			return opAtt;
-		else
-			return ppAtt;
+		if (o_p_att.attack_id == "whip")
+			winner = o_p_att;
 	}
+	return winner;
 }

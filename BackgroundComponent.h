@@ -11,61 +11,70 @@
 class BackgroundComponent : public Component
 {
 private:
-	TransformComponent * transform;
-	SDL_Texture *texture;
-	SDL_Rect srcRect, destRec;
-	int rotations = 0;
+	TransformComponent * transform_;
+	SDL_Texture *texture_;
+	SDL_Rect src_rect_, dest_rect_, left_dest_rect_, right_dest_rect_;
+	int rotations_ = 0;
 
 public:
 
 
-	SDL_RendererFlip spriteflip = SDL_FLIP_NONE;
+	SDL_RendererFlip sprite_flip = SDL_FLIP_NONE;
 
 	BackgroundComponent() = default;
-	BackgroundComponent(std::string id)
+
+	explicit BackgroundComponent(const std::string id)
 	{
-		setTex(id);
+		set_tex(id);
 	}
 
-	BackgroundComponent(std::string id, int rots, SDL_RendererFlip flp)
+	BackgroundComponent(const std::string id, const int rots, const SDL_RendererFlip flp)
 	{
-		rotations = rots;
-		setTex(id);
-		spriteflip = flp;
+		rotations_ = rots;
+		set_tex(id);
+		sprite_flip = flp;
 	}
 
 	~BackgroundComponent()
 	{
 	}
 
-	SDL_Rect getSrcRect()
+	void set_tex(const std::string id)
 	{
-		return srcRect;
-	}
-
-	void setTex(std::string id)
-	{
-		texture = Game::assets->GetTexture(id);
+		texture_ = Game::assets->get_texture(id);
 	}
 
 	void init() override
 	{
-		transform = &entity->getComponent<TransformComponent>();
+		transform_ = &entity->get_component<TransformComponent>();
 
-		srcRect.x = srcRect.y = 0;
-		srcRect.w = transform->width;
-		srcRect.h = transform->height;
+		src_rect_.x = src_rect_.y = 0;
+		src_rect_.w = transform_->width;
+		src_rect_.h = transform_->height;
 	}
+
 	void update() override
 	{
-		destRec.x = static_cast<int>(transform->position.x);
-		destRec.y = static_cast<int>(transform->position.y);
-		destRec.w =  transform->width * transform->scale;
-		destRec.h = transform->height * transform->scale;
+		dest_rect_.x = static_cast<int>(transform_->position.x);
+		dest_rect_.y = static_cast<int>(SCREEN_HEIGHT - transform_->height * transform_->scale);
+		dest_rect_.w = transform_->width * transform_->scale;
+		dest_rect_.h = transform_->height * transform_->scale;
+
+		left_dest_rect_.x = dest_rect_.x - dest_rect_.w;
+		left_dest_rect_.y = dest_rect_.y;
+		left_dest_rect_.w = dest_rect_.w;
+		left_dest_rect_.h = dest_rect_.h;
+
+		right_dest_rect_.x = dest_rect_.x + dest_rect_.w;
+		right_dest_rect_.y = dest_rect_.y;
+		right_dest_rect_.w = dest_rect_.w;
+		right_dest_rect_.h = dest_rect_.h;
 	}
 
 	void draw() override
 	{
-		TextureManager::Draw(texture, srcRect, destRec, rotations, spriteflip);
+		TextureManager::draw(texture_, src_rect_, dest_rect_, rotations_, sprite_flip);
+		TextureManager::draw(texture_, src_rect_, left_dest_rect_, rotations_, sprite_flip);
+		TextureManager::draw(texture_, src_rect_, right_dest_rect_, rotations_, sprite_flip);
 	}
 };

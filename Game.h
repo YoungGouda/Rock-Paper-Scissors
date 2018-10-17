@@ -1,34 +1,33 @@
 #pragma once
 
 #include <SDL.h>
-#include "Constants.h"
-#include <SDL_image.h>
 #include "AssetManager.h"
-#include "KeyboardHandler.h"
 
 
 class Game
 {
 public:
-	void init(const char * windowTitle);
-	void update();
-	void render();
-	void handleEvents();
+	void init(const char * window_title);
+	static void update();
+	static void render();
+	static void handle_events();
+	static void set_next_state(int new_state);
 	void clean();
-	bool running() { return isRunning; }
+	static bool running() { return is_running; }
 
-	static bool isRunning;
+	static bool is_running;
+	static int state_id;
 	static SDL_Renderer *renderer;
 	static SDL_Event event;
 	static AssetManager* assets;
 	SDL_Window *window;
-	static bool endOfRound;
 
-	enum groupLabels : std::size_t
+	enum group_labels : std::size_t
 	{
-		groupBackground,
-		groupPlayers,
-		groupColliders,
+		group_background,
+		group_screens,
+		group_players,
+		group_cursors
 	};
 
 private:

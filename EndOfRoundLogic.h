@@ -9,50 +9,47 @@ public:
 
 	EndOfRoundLogic(Entity * player1, Entity * player2)
 	{
-		pPlayerTC = &player1->getComponent<TransformComponent>();
-		oPlayerTC = &player2->getComponent<TransformComponent>();
+		p_player_tc_ = &player1->get_component<TransformComponent>();
+		o_player_tc_ = &player2->get_component<TransformComponent>();
 
-		pPlayerPC = &player1->getComponent<PlayerComponent>();
-		oPlayerPC = &player2->getComponent<PlayerComponent>();
+		p_player_pc_ = &player1->get_component<PlayerComponent>();
+		o_player_pc_ = &player2->get_component<PlayerComponent>();
 
-		pPlayerSC = &player1->getComponent<SpriteComponent>();
-		oPlayerSC = &player2->getComponent<SpriteComponent>();
-		if (player2->getComponent<PlayerComponent>().PriorityPlayer)
+		p_player_sc_ = &player1->get_component<SpriteComponent>();
+		o_player_sc_ = &player2->get_component<SpriteComponent>();
+		if (player2->get_component<PlayerComponent>().priority_player)
 		{
-			pPlayerTC = &player2->getComponent<TransformComponent>();
-			oPlayerTC = &player1->getComponent<TransformComponent>();
+			p_player_tc_ = &player2->get_component<TransformComponent>();
+			o_player_tc_ = &player1->get_component<TransformComponent>();
 
-			pPlayerPC = &player2->getComponent<PlayerComponent>();
-			oPlayerPC = &player1->getComponent<PlayerComponent>();
+			p_player_pc_ = &player2->get_component<PlayerComponent>();
+			o_player_pc_ = &player1->get_component<PlayerComponent>();
 
-			pPlayerSC = &player2->getComponent<SpriteComponent>();
-			oPlayerSC = &player1->getComponent<SpriteComponent>();
+			p_player_sc_ = &player2->get_component<SpriteComponent>();
+			o_player_sc_ = &player1->get_component<SpriteComponent>();
 		}
 	}
 	~EndOfRoundLogic()
-	{}
+	= default;
 
-	bool CheckWinner();
-	bool CheckMatchWinner();
+	bool check_winner() const;
+	bool check_match_winner() const;
 
-	Attack checkAttackWinner(Attack ppAtt, Attack opAtt);
+	static Attack check_attack_winner(Attack p_p_att, Attack o_p_att);
 private:
-	TransformComponent * pPlayerTC;
-	TransformComponent * oPlayerTC;
-	SpriteComponent * pPlayerSC;
-	SpriteComponent * oPlayerSC;
-	PlayerComponent * pPlayerPC;
-	PlayerComponent * oPlayerPC;
-	bool checOutRightVictor(Attack ppAtt, Attack opAtt);
-	bool checkAttackInRange(Attack att);
-	bool checkAttackInRange(Attack att, float updatedPosition);
-	void cleanUpRound(PlayerComponent * wPlayerPC, PlayerComponent * lPlayerPC)
+	TransformComponent * p_player_tc_;
+	TransformComponent * o_player_tc_;
+	SpriteComponent * p_player_sc_;
+	SpriteComponent * o_player_sc_;
+	PlayerComponent * p_player_pc_;
+	PlayerComponent * o_player_pc_;
+	bool check_for_out_right_victor(Attack p_p_att, Attack o_p_att) const;
+	bool check_attack_in_range(Attack att) const;
+	bool check_attack_in_range(Attack att, float updated_position) const;
+	void clean_up_round(PlayerComponent * w_player_pc) const
 	{
-		/*wPlayerPC->roundWin();
-		wPlayerPC->switchPriority();
-		lPlayerPC->switchPriority();*/
-		std::cout << "Round Winner: " << wPlayerPC->playerName << std::endl;
-		if (CheckMatchWinner())
-			std::cout << "Congratulations " << wPlayerPC->playerName << std::endl;
+		std::cout << "Round Winner: " << w_player_pc->player_name << std::endl;
+		if (check_match_winner())
+			std::cout << "Congratulations " << w_player_pc->player_name << std::endl;
 	}
 };

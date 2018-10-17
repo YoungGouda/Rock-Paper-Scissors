@@ -1,26 +1,21 @@
 #pragma once
-#include "Animation.h"
 #include <string>
 
 
 struct Attack
 {
 
-	float Range;
-	float whifDistance;
-	std::string animID;
+	float range;
+	float whiff_distance;
+	const char * attack_id;
 
-	Attack(float rng, float wDist, std::string ID)
-	{
-		Range = rng;
-		whifDistance = wDist;
-		animID = ID;
-	}
+	Attack(const float rng, const float w_dist, const char * id) : range(rng), whiff_distance(w_dist), attack_id(id)
+	{}
 
 	Attack()
 	{
-		Range = WHIP_RANGE;
-		whifDistance = WHIP_WHIF;
-		animID = "whip";
+		range = WHIP_RANGE;
+		whiff_distance = WHIP_WHIFF;
+		attack_id = "whip";
 	}
 };

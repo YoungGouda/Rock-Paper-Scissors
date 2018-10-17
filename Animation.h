@@ -9,11 +9,10 @@ struct Animation
 	int rotations;
 	SDL_RendererFlip flip;
 
-	Animation()
-	{
+	Animation(): index(0), frames(0), speed(0), rotations(0), flip(SDL_FLIP_NONE)
+	{}
 
-	}
-	Animation(int i, int f, int s)
+	Animation(const int i, const int f, const int s)
 	{
 		index = i;
 		frames = f;
@@ -22,7 +21,7 @@ struct Animation
 		flip = SDL_FLIP_NONE;
 	}
 
-	Animation(int i, int f, int s, int rots, SDL_RendererFlip flp)
+	Animation(const int i, const int f, const int s, const int rots, const SDL_RendererFlip flp)
 	{
 		index = i;
 		frames = f;

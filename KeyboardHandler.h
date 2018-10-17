@@ -1,26 +1,21 @@
 #pragma once
 #include <SDL.h>
 #undef main
-#include <string>
 
 class KeyboardHandler
 {
 public:
 
-	KeyboardHandler()
+	KeyboardHandler(): key_events{}
 	{}
 
-	bool checkKeyEvent(SDL_Keycode key, SDL_EventType type)
+	bool check_key_state(const SDL_Scancode key_code) const
 	{
-		return keyEvents[key] == type;
+		return key_states[key_code];
 	}
 
-	bool checkKeyState(SDL_Scancode keyCode) {
-		return (keystates[keyCode]);
-	}
+	const Uint8* key_states = SDL_GetKeyboardState(nullptr);
 
-	const Uint8* keystates = SDL_GetKeyboardState(NULL);
-
-	Uint32 keyEvents[];
+	Uint32 key_events[];
 private:
 };

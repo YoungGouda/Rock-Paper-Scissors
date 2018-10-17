@@ -11,59 +11,60 @@
 
 class SpriteComponent : public Component
 {
-private:
-	TransformComponent * transform;
-	SDL_Texture *texture;
-	SDL_Rect srcRect, destRect;
-	std::string animID;
-	int frames = 0;
-	int speed = 200;
-	int rotations = 0;
+	TransformComponent * transform_;
+	SDL_Texture *texture_;
+	SDL_Rect src_rect_, dest_rect_;
+	std::string anim_id_;
+	int frames_ = 1;
+	int speed_ = 200;
+	int rotations_ = 0;
 
 public:
 
 
 	bool animated = false;
-	int animIndex = 0;
+	int anim_index = 0;
 
 	std::map<const char*, Animation > animations;
 
-	SDL_RendererFlip spriteflip = SDL_FLIP_NONE;
+	SDL_RendererFlip sprite_flip = SDL_FLIP_NONE;
 
 	SpriteComponent() = default;
-	SpriteComponent(std::string id)
+	SpriteComponent(const std::string id)
 	{
-		setTex(id);
+		set_tex(id);
 	}
 
-	SpriteComponent(std::string id, int rots, SDL_RendererFlip flp, bool isAnimated )
+	SpriteComponent(const std::string id, const int rots, const SDL_RendererFlip flp, const bool is_animated )
 	{
-		rotations = rots;
-		spriteflip = flp;
-		setTex(id);
-		animated = isAnimated;
+		rotations_ = rots;
+		sprite_flip = flp;
+		set_tex(id);
+		animated = is_animated;
 
-		Animation idle = Animation(0, 3, speed);
-		Animation walk = Animation(1, 3, speed);
+		auto idle = Animation(0, 3, speed_);
+		auto walk_left = Animation(1, 3, speed_);
+		auto walk_right = Animation(2, 3, speed_);
 
 		animations.emplace("idle", idle);
-		animations.emplace("walkLeft", walk);
-		animations.emplace("walkRight", walk);
-		Play("idle");
+		animations.emplace("walk left", walk_left);
+		animations.emplace("walk right", walk_right);
+		play("idle");
 
 	}
 
-	SpriteComponent(std::string id, bool isAnimated)
+	SpriteComponent(const std::string id, const bool is_animated)
 	{
-		animated = isAnimated;
-		setTex(id);
-		Animation idle = Animation(0, 3, speed);
-		Animation walk = Animation(1, 3, speed);
+		animated = is_animated;
+		set_tex(id);
+		auto idle = Animation(0, 3, speed_);
+		auto  walk_right= Animation(1, 3, speed_);
+		auto walk_left = Animation(2, 3, speed_);
 
 		animations.emplace("idle", idle);
-		animations.emplace("walkLeft", walk);
-		animations.emplace("walkRight", walk);
-		Play("idle");
+		animations.emplace("walk left", walk_left);
+		animations.emplace("walk right", walk_right);
+		play("idle");
 	
 	}
 
@@ -71,60 +72,60 @@ public:
 	{
 	}
 
-	void setTex(std::string id)
+	void set_tex(const std::string id)
 	{
-		texture = Game::assets->GetTexture(id);
+		texture_ = Game::assets->get_texture(id);
 	}
 
 
-	bool isAnimID(std::string aID)
+	bool is_anim_id(const std::string a_id) const
 	{
-		return animID == aID;
+		return anim_id_ == a_id;
 	}
 
-	SDL_Rect cloneAndReturnDestRect( int w)
+	SDL_Rect clone_and_return_dest_rect(const int w) const
 	{
-		SDL_Rect cloneRect;
-		cloneRect.y = destRect.y;
-		cloneRect.x = destRect.x;
-		cloneRect.w = w;
-		cloneRect.h = destRect.h;
-		return cloneRect;
+		SDL_Rect clone_rect;
+		clone_rect.y = dest_rect_.y;
+		clone_rect.x = dest_rect_.x;
+		clone_rect.w = w;
+		clone_rect.h = dest_rect_.h;
+		return clone_rect;
 	}
 
 	void init() override
 	{
-		transform = &entity->getComponent<TransformComponent>();
+		transform_ = &entity->get_component<TransformComponent>();
 
-		srcRect.x = srcRect.y = 0;
-		srcRect.w = transform->width;
-		srcRect.h = transform->height;
+		src_rect_.x = src_rect_.y = 0;
+		src_rect_.w = transform_->width;
+		src_rect_.h = transform_->height;
 	}
 	void update() override
 	{
 		if (animated)
 		{
-			srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed) % frames);
+			src_rect_.x = src_rect_.w * static_cast<int>((SDL_GetTicks() / speed_) % frames_);
 		}
 			
-		srcRect.y = animIndex * transform->height;
+		src_rect_.y = anim_index * transform_->height;
 
-		destRect.x = static_cast<int>(transform->position.x);
-		destRect.y = static_cast<int>(transform->position.y);
-		destRect.w = transform->width * transform->scale;
-		destRect.h = transform->height * transform->scale;
+		dest_rect_.x = static_cast<int>(transform_->position.x);
+		dest_rect_.y = static_cast<int>(transform_->position.y);
+		dest_rect_.w = transform_->width * transform_->scale;
+		dest_rect_.h = transform_->height * transform_->scale;
 	}
 
 	void draw() override
 	{
-		TextureManager::Draw(texture, srcRect, destRect, rotations, spriteflip);
+		TextureManager::draw(texture_, src_rect_, dest_rect_, rotations_, sprite_flip);
 	}
 
-	void Play(const char* animName)
+	void play(const char* anim_name)
 	{
-		animID = animName;
-		frames = animations[animName].frames;
-		animIndex = animations[animName].index;
-		speed = animations[animName].speed;
+		anim_id_ = anim_name;
+		frames_ = animations[anim_name].frames;
+		anim_index = animations[anim_name].index;
+		speed_ = animations[anim_name].speed;
 	}
 };

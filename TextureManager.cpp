@@ -2,16 +2,16 @@
 #include "TextureManager.h"
 #include "Constants.h"
 
-SDL_Texture* TextureManager::LoadTexture(const char* texture)
+SDL_Texture* TextureManager::load_texture(const char* texture)
 {
-	SDL_Surface* tempSurface = IMG_Load(texture);
-	SDL_Texture* tex = SDL_CreateTextureFromSurface(Game::renderer, tempSurface);
-	SDL_FreeSurface(tempSurface);
+	const auto temp_surface = IMG_Load(texture);
+	const auto tex = SDL_CreateTextureFromSurface(Game::renderer, temp_surface);
+	SDL_FreeSurface(temp_surface);
 
 	return tex;
 }
 
-void TextureManager::Draw(SDL_Texture * tex, SDL_Rect src, SDL_Rect dest, int rots, SDL_RendererFlip flip)
+void TextureManager::draw(SDL_Texture * tex, SDL_Rect src, SDL_Rect dest, const int rots, const SDL_RendererFlip flip)
 {
-	SDL_RenderCopyEx(Game::renderer, tex, &src, &dest, rots * ROTATION, NULL, flip);
+	SDL_RenderCopyEx(Game::renderer, tex, &src, &dest, rots * ROTATION, nullptr, flip);
 }

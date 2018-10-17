@@ -8,54 +8,52 @@ class BackgroundLogic
 public:
 	BackgroundLogic() = default;
 
-	BackgroundLogic(Entity * player1, Entity * player2, Entity * background, int maxR) : maxRange(maxR)
+	BackgroundLogic(Entity * player1, Entity * player2, Entity * background, const int max_r) : max_range_(max_r)
 	{
-		p1TC = &player1->getComponent<TransformComponent>();
-		p2TC = &player2->getComponent<TransformComponent>();
-		bgTC = &background->getComponent<TransformComponent>();
+		p1_tc_ = &player1->get_component<TransformComponent>();
+		p2_tc_ = &player2->get_component<TransformComponent>();
+		bg_tc_ = &background->get_component<TransformComponent>();
 
-		p1CC = &player1->getComponent<ControllerComponent>();
-		p2CC = &player2->getComponent<ControllerComponent>();
+		p1_pc_ = &player1->get_component<PlayerComponent>();
+		p2_pc_ = &player2->get_component<PlayerComponent>();
 
-		p1SC = &player1->getComponent<SpriteComponent>();
-		p2SC = &player2->getComponent<SpriteComponent>();
+		p1_sc_ = &player1->get_component<SpriteComponent>();
+		p2_sc_ = &player2->get_component<SpriteComponent>();
 
-		player1VelocityScale = p1CC->getVelocityScale();
-		player2VelocityScale = p2CC->getVelocityScale();
+		player1_velocity_scale_ = p1_pc_->get_velocity();
+		player2_velocity_scale_ = p2_pc_->get_velocity();
 
-		player1VelocityScaleDifference = player1VelocityScale - player2VelocityScale;
-		player2VelocityScaleDifference = player2VelocityScale - player1VelocityScale;
+		player1_velocity_scale_difference_ = player1_velocity_scale_ - player2_velocity_scale_;
+		player2_velocity_scale_difference_ = player2_velocity_scale_ - player1_velocity_scale_;
 	}
 
 	~BackgroundLogic()
 	{}
 
-	void ScreenChange(float prevPlayer1X, float prevPlayer2X);
+	void screen_change(float prevPlayer1X, float prevPlayer2X) const;
 
 private:
-	Manager* manager;
+	TransformComponent * p1_tc_;
+	TransformComponent * p2_tc_;
+	TransformComponent * bg_tc_;
 
-	TransformComponent * p1TC;
-	TransformComponent * p2TC;
-	TransformComponent * bgTC;
+	PlayerComponent * p1_pc_;
+	PlayerComponent * p2_pc_;
 
-	ControllerComponent * p1CC;
-	ControllerComponent * p2CC;
+	SpriteComponent * p1_sc_;
+	SpriteComponent * p2_sc_;
 
-	SpriteComponent * p1SC;
-	SpriteComponent * p2SC;
+	int max_range_;
 
-	int maxRange;
+	float player1_velocity_scale_;
+	float player2_velocity_scale_;
 
-	float player1VelocityScale;
-	float player2VelocityScale;
+	float player1_velocity_scale_difference_;
+	float player2_velocity_scale_difference_;
 
-	float player1VelocityScaleDifference;
-	float player2VelocityScaleDifference;
-
-	void scrollScreenRight(float scrollIncrement);
-	void scrollScreenLeft(float scrollIncrement);
-	void stretchAssets(float stretch);
-	void shrinkAssets(float shrink);
+	void scroll_screen_right(float scroll_increment) const;
+	void scroll_screen_left(float scroll_increment) const;
+	void stretch_assets(float stretch) const;
+	void shrink_assets(float shrink) const;
 
 };

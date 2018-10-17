@@ -2,17 +2,21 @@
 #include "ECS.h"
 #include <map>
 #include "Attack.h"
+#include "character.h"
 
 extern Manager manager;
 
 class PlayerComponent : public Component
 {
+	float hit_box_;
 public:
-	std::map<const char *, Attack> attacks;
-	int numWins;
-	bool PriorityPlayer;
-	Attack chosenAttack;
-	std::string playerName;
+	int num_wins;
+	bool priority_player;
+	Attack chosen_attack;
+	std::string player_name;
+	Character player_identity;
+
+	//Debug
 	Uint8 red = 0;
 	Uint8 green = 0;
 	Uint8 blue = 0;
@@ -20,76 +24,81 @@ public:
 
 	PlayerComponent() 
 	{
-		playerName = "NOT GOOD";
-		PriorityPlayer = false;
-		numWins = 0;
+		player_name = "NOT GOOD";
+		priority_player = false;
+		num_wins = 0;
 
 	}
 
-	PlayerComponent(bool hasPriority, std::string name) : PriorityPlayer(hasPriority)
+	PlayerComponent(const bool has_priority, const Character character) : priority_player(has_priority)
 	{
-		playerName = name;
+		player_identity = character;
+		player_name = character.id;
 
-		numWins = 0;
-
-		Attack whip(WHIP_RANGE, WHIP_WHIF, "whip");
-		Attack jumpKick(JUMP_KICK_RANGE, JUMP_KICK_WHIF, "jump kick");
-		Attack grab(GRAB_RANGE, GRAB_WHIF, "grab");
-
-		attacks.emplace("whip", whip);
-		attacks.emplace("jump kick", jumpKick);
-		attacks.emplace("grab", grab);
+		num_wins = 0;
 	}
 
 	~PlayerComponent()
 	{}
 
-	void switchPriority()
+	void round_win()
 	{
-		ControllerComponent * playerCC = &entity->getComponent<ControllerComponent>();
-
-		PriorityPlayer = !PriorityPlayer;
-		if (PriorityPlayer)
-			playerCC->setVelocityScale(PLAYER_VELOCITY);
-		else
-			playerCC->setVelocityScale(PLAYER_PRIORITY_VELOCITY);
+		num_wins++;
 	}
 
-	void roundWin()
+	float get_velocity()
 	{
-		numWins++;
+		auto velocity = player_identity.velocity;
+		if (priority_player)
+			velocity = player_identity.velocity + PLAYER_PRIORITY_INCREMENT;
+		return velocity;
+	}	
+
+	void choose_attack(const char * att_id)
+	{
+		chosen_attack = player_identity.attacks[att_id];
 	}
 
-	void chooseAttack(const char * attID)
-	{
-		chosenAttack = attacks[attID];
-	}
-
-	void setLineColor(Uint8 r, Uint8 g, Uint8 b)
+	void set_line_color(const Uint8 r, const Uint8 g, const Uint8 b)
 	{
 		red = r;
 		green = g;
 		blue = b;
 	}
 
+	int get_player_distance() const
+	{
+		const auto player_sprite = entity->get_component<SpriteComponent>();
+		const auto player_transform = entity->get_component<TransformComponent>();
+
+		const auto scaled_size = player_transform.scale * SPRITE_LENGTH;
+		const auto hit_box_size = scaled_size * player_identity.hit_box;
+
+		int player_distance = player_transform.position.x + hit_box_size;
+		
+		if (player_sprite.sprite_flip == SDL_FLIP_HORIZONTAL)
+			player_distance = player_transform.position.x + scaled_size - hit_box_size;
+
+		return player_distance;
+	}
+
 	void draw() override
 	{
-		Vector2D position = entity->getComponent<TransformComponent>().position;
-		int scaledSize = entity->getComponent<TransformComponent>().scale * SPRITE_LENGTH;
-		int direction = 1;
+		const auto position = entity->get_component<TransformComponent>().position;
+		const int scaled_size = entity->get_component<TransformComponent>().scale * SPRITE_LENGTH;
+		auto direction = 1;
 
-		if (entity->getComponent<SpriteComponent>().spriteflip == SDL_FLIP_HORIZONTAL)
+		if (entity->get_component<SpriteComponent>().sprite_flip == SDL_FLIP_HORIZONTAL)
 			direction = -1;
 
-		
 		SDL_SetRenderDrawColor(Game::renderer, red, green, blue, SDL_ALPHA_OPAQUE);
-		SDL_RenderDrawLine(Game::renderer, position.x + scaledSize / 2, position.y + scaledSize / 2 + direction * 3, position.x + chosenAttack.Range * scaledSize * direction + scaledSize / 2, position.y + scaledSize / 2 + direction * 3);
+		SDL_RenderDrawLine(Game::renderer, get_player_distance(), position.y + scaled_size / 2 + direction * 3, get_player_distance() + chosen_attack.range * direction * scaled_size, position.y + scaled_size / 2 + direction * 3);
 		SDL_SetRenderDrawColor(Game::renderer, red, red, red, SDL_ALPHA_OPAQUE);
-		SDL_RenderDrawLine(Game::renderer, position.x + scaledSize / 2, position.y + scaledSize / 3 + direction * 3, position.x + chosenAttack.whifDistance * scaledSize * direction + scaledSize / 2, position.y + scaledSize / 3 + direction * 3);
-		if (PriorityPlayer)
+		SDL_RenderDrawLine(Game::renderer, get_player_distance(), position.y + scaled_size / 3 + direction * 3, get_player_distance() + chosen_attack.whiff_distance * direction * scaled_size, position.y + scaled_size / 3 + direction * 3);
+		if (priority_player)
 		{
 			SDL_SetRenderDrawColor(Game::renderer, blue, blue, blue, SDL_ALPHA_OPAQUE);
-			SDL_RenderDrawLine(Game::renderer, position.x + scaledSize / 2, position.y + scaledSize, position.x + scaledSize / 2, position.y);
+			SDL_RenderDrawLine(Game::renderer, get_player_distance(), position.y + scaled_size, get_player_distance(), position.y);
 
 		}
 	}

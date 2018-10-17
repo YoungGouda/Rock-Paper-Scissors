@@ -4,7 +4,6 @@
 
 class TransformComponent : public Component
 {
-
 public:
 
 	Vector2D position;
@@ -22,20 +21,20 @@ public:
 		position.y = 0.0f;
 	}
 
-	TransformComponent(int sc)
+	explicit TransformComponent(const int sc)
 	{
 		position.x = 400;
 		position.y = 320;
 		scale = sc;
 	}
 
-	TransformComponent(float x, float y)
+	TransformComponent(const float x, const float y)
 	{
 		position.x = x;
 		position.y = y;
 	}
 
-	TransformComponent(float x, float y, int h, int w, float sc)
+	TransformComponent(const float x, const float y, const int h, const int w, const float sc)
 	{
 		position.x = x;
 		position.y = y;
@@ -44,28 +43,28 @@ public:
 		scale = sc;
 	}
 
-	void setXVelocity(int x)
+	void set_x_velocity(const int x)
 	{
 		velocity.x = x;
 	}
 
-	void setXPosition(float x)
+	void set_x_position(const float x)
 	{
 		position.x = x;
 	}
 
-	void setXPositionAndScaling(float x, float sc)
+	void set_x_position_and_scaling(const float x, const float sc)
 	{
 		position.x = x;
 		scale = sc;
 	}
 
-	void setYPosition(int y)
+	void set_y_position(const int y)
 	{
 		position.y = y;
 	}
 
-	void setScaling(float sc)
+	void set_scaling(const float sc)
 	{
 		scale = sc;
 	}
@@ -75,9 +74,10 @@ public:
 		velocity.x = 0;
 		velocity.y = 0;
 	}
+
 	void update() override
 	{
-		position.x += velocity.x * (float)speed;
+		position.x += velocity.x * static_cast<float>(speed);
 		position.y += velocity.y * speed;
 	}
 };

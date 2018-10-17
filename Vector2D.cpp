@@ -7,13 +7,13 @@ Vector2D::Vector2D()
 	y = 0.0f;
 }
 
-Vector2D::Vector2D(float x, float y)
+Vector2D::Vector2D(const float x, const float y)
 {
 	this->x = x;
 	this->y = y;
 
 }
-Vector2D& Vector2D::Add(const Vector2D& vec)
+Vector2D& Vector2D::add(const Vector2D& vec)
 {
 	this->x += vec.x;
 	this->y += vec.y;
@@ -21,7 +21,7 @@ Vector2D& Vector2D::Add(const Vector2D& vec)
 	return *this;
 }
 
-Vector2D& Vector2D::Subtract(const Vector2D& vec)
+Vector2D& Vector2D::subtract(const Vector2D& vec)
 {
 	this->x -= vec.x;
 	this->y -= vec.y;
@@ -29,7 +29,7 @@ Vector2D& Vector2D::Subtract(const Vector2D& vec)
 	return *this;
 }
 
-Vector2D& Vector2D::Multiply(const Vector2D& vec)
+Vector2D& Vector2D::multiply(const Vector2D& vec)
 {
 	this->x *= vec.x;
 	this->y *= vec.y;
@@ -37,7 +37,7 @@ Vector2D& Vector2D::Multiply(const Vector2D& vec)
 	return *this;
 }
 
-Vector2D& Vector2D::Divide(const Vector2D& vec)
+Vector2D& Vector2D::divide(const Vector2D& vec)
 {
 	this->x /= vec.x;
 	this->y /= vec.y;
@@ -47,43 +47,44 @@ Vector2D& Vector2D::Divide(const Vector2D& vec)
 
 Vector2D& operator+(Vector2D& v1, const Vector2D& v2)
 {
-	return v1.Add(v2);
+	return v1.add(v2);
 }
 
 Vector2D& operator-(Vector2D& v1, const Vector2D& v2)
 {
-	return v1.Subtract(v2);
+	return v1.subtract(v2);
 }
 
 Vector2D& operator*(Vector2D& v1, const Vector2D& v2)
 {
-	return v1.Multiply(v2);
+	return v1.multiply(v2);
 }
 
 Vector2D& operator/(Vector2D& v1, const Vector2D& v2)
 {
-	return v1.Divide(v2);
+	return v1.divide(v2);
 }
 
 Vector2D& Vector2D::operator+=(const Vector2D& vec)
 {
-	return this->Add(vec);
+	return this->add(vec);
 }
 
 Vector2D& Vector2D::operator-=(const Vector2D& vec)
 {
-	return this->Subtract(vec);
+	return this->subtract(vec);
 }
 
 Vector2D& Vector2D::operator*=(const Vector2D& vec)
 {
-	return this->Multiply(vec);
+	return this->multiply(vec);
 }
 
 Vector2D& Vector2D::operator/=(const Vector2D& vec)
 {
-	return this->Divide(vec);
+	return this->divide(vec);
 }
+
 
 std::ostream& operator<<(std::ostream& stream, const Vector2D& vec)
 {

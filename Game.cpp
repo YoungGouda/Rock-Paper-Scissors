@@ -1,144 +1,131 @@
 #include "stdafx.h"
+#include "Menu.h"
+#include "Combat.h"
+#include "GameState.h"
 
 
 Manager manager;
 
-BackgroundLogic * bgLogic;
-EndOfRoundLogic * eorLogic;
 SDL_Renderer *Game::renderer = nullptr;
 SDL_Event Game::event;
-KeyboardHandler* keyHandler = new KeyboardHandler();
+
+KeyboardHandler* key_handler = new KeyboardHandler();
 AssetManager* Game::assets = new AssetManager(&manager);
-bool Game::endOfRound = false;
+GameState * current_state = nullptr;
 
-bool Game::isRunning = false;
-SDL_Scancode keys[3] = { SDL_SCANCODE_D, SDL_SCANCODE_A, SDL_SCANCODE_1};
+bool Game::is_running = false;
 
-auto& playerLeft(manager.addEntity());
-auto& playerRight(manager.addEntity());
-auto& background(manager.addEntity());
-auto& backgroundRight(manager.addEntity());
-auto& backgroundLeft(manager.addEntity());
+auto& player_1(manager.add_entity());
+auto& player_2(manager.add_entity());
+auto& background(manager.add_entity());
+auto& cursor(manager.add_entity());
+auto& screen(manager.add_entity());
+
+//State variables
+
+int Game::state_id = STATE_NULL;
+int next_state = STATE_NULL;
 
 
-void Game::init(const char * windowTitle)
+void Game::init(const char * window_title)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
-		window = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		renderer = SDL_CreateRenderer(window, -1, 0);
 
 		if (renderer)
 		{
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		}
-		Game::isRunning = true;
+		if (TTF_Init() == -1) {
+			printf("TTF_Init: %s\n", TTF_GetError());
+			exit(2);
+		}
+		Game::is_running = true;
 	}
 
-	assets->AddTexture("player", "Fighter_full.png");
-	assets->AddTexture("background", "backgroundTake3.png");
+	assets->add_texture("player", "Fighter_full.png");
+	assets->add_texture("background", "western industrial.jpg");
+	assets->add_texture("square", "square_full.png");
+	assets->add_texture("arms", "LongArms_full.png");
+	assets->add_texture("box", "textbox.png");
+	assets->add_texture("cursor", "cursor.png");
+	assets->add_texture("main", "Title_screen.png");
+
+	assets->add_font("gil sans", "GIL_____.TTF", 18);
+
+	current_state = new Menu(&cursor, &screen);
+	state_id = STATE_MENU;
 	
-	background.addComponent<TransformComponent>(0, BACKGROUND_Y_OFFSET, BACKGROUND_HEIGHT, BACKGROUND_WIDTH, BACKGROUND_SCALING);
-	background.addComponent<BackgroundComponent>("background");
-	background.addGroup(Game::groupBackground);
-
-	backgroundRight.addComponent<TransformComponent>(background.getComponent<TransformComponent>().position.x + BACKGROUND_WIDTH, BACKGROUND_Y_OFFSET, BACKGROUND_HEIGHT, BACKGROUND_WIDTH, BACKGROUND_SCALING);
-	backgroundRight.addComponent<BackgroundComponent>("background");
-	backgroundRight.addGroup(Game::groupBackground);
-
-	backgroundLeft.addComponent<TransformComponent>(background.getComponent<TransformComponent>().position.x - BACKGROUND_WIDTH, BACKGROUND_Y_OFFSET, BACKGROUND_HEIGHT, BACKGROUND_WIDTH, BACKGROUND_SCALING);
-	backgroundLeft.addComponent<BackgroundComponent>("background");
-	backgroundLeft.addGroup(Game::groupBackground);
-
-	playerLeft.addComponent<TransformComponent>(SPRITE_LEFT_EDGE_OF_SCREEN, SPRITE_BOTTOM_OF_SCREEN, SPRITE_LENGTH, SPRITE_LENGTH, SPRITE_SCALING);
-	playerLeft.addComponent<SpriteComponent>("player", true);
-	playerLeft.addComponent<ControllerComponent>(PLAYER_VELOCITY);
-	playerLeft.addComponent<PlayerComponent>(false, "Brunis");
-	playerLeft.addGroup(Game::groupPlayers);
-
-	playerRight.addComponent<TransformComponent>(SPRITE_RIGHT_EDGE_OF_SCREEN, SPRITE_BOTTOM_OF_SCREEN, SPRITE_LENGTH, SPRITE_LENGTH, SPRITE_SCALING);
-	playerRight.addComponent<SpriteComponent>("player", 0, SDL_FLIP_HORIZONTAL, true);
-	playerRight.addComponent<ControllerComponent>(PLAYER_PRIORITY_VELOCITY, keys);
-	playerRight.addComponent<PlayerComponent>(true, "Goon");
-	playerRight.addGroup(Game::groupPlayers);
-
-	playerLeft.getComponent<PlayerComponent>().setLineColor(255, 0, 0);
-	playerRight.getComponent<PlayerComponent>().setLineColor(0, 0, 255);
-
-	playerLeft.getComponent<PlayerComponent>().chooseAttack("whip");
-	playerRight.getComponent<PlayerComponent>().chooseAttack("jump kick");
-
-	bgLogic = new BackgroundLogic(&playerLeft, &playerRight, &background, 4);
-	eorLogic = new EndOfRoundLogic(&playerLeft, &playerRight);
 }
 
-auto& playerGroup = manager.getGroup(Game::groupPlayers);
-auto& backgroundGroup = manager.getGroup(Game::groupBackground);
+// Stolen verbatim from @LazyFooProductions
+void Game::set_next_state(const int new_state)
+{
+	//If the user doesn't want to exit
+	if (next_state != STATE_EXIT)
+	{
+		//Set the next state
+		next_state = new_state;
+	}
+}
+
+// Stolen verbatim from @LazyFooProductions
+void change_state()
+{
+	//If the state needs to be changed
+	if (next_state != STATE_NULL)
+	{
+		//Delete the current state
+		if (next_state != STATE_EXIT)
+		{
+			current_state = nullptr;
+		}
+
+		//Change the state
+		switch (next_state)
+		{
+		case STATE_MENU:
+			current_state = new Menu(&cursor, &screen);
+			break;
+
+		case STATE_COMBAT:
+			current_state = new Combat(&player_1, &player_2, &background);
+			break;
+		default: ;
+		}
+
+		//Change the current state ID
+		Game::state_id = next_state;
+
+		//NULL the next state ID
+		next_state = STATE_NULL;
+	}
+}
 
 void Game::update()
 {
-
-	float player1X = playerLeft.getComponent<TransformComponent>().position.x;
-	float player2X = playerRight.getComponent<TransformComponent>().position.x;
-
-	manager.refresh();
-	manager.update();
-
-	bgLogic->ScreenChange(player1X, player2X);
-
-	TransformComponent * centerbgTC = &background.getComponent<TransformComponent>();
-	TransformComponent * rightbgTC = &backgroundRight.getComponent<TransformComponent>();
-	TransformComponent * leftbgTC = &backgroundLeft.getComponent<TransformComponent>();
-
-	
-	// Sync backgrounds
-	centerbgTC->setYPosition(SCREEN_HEIGHT - centerbgTC->height * centerbgTC->scale);
-	rightbgTC->setYPosition(centerbgTC->position.y);
-	leftbgTC->setYPosition(centerbgTC->position.y);
-
-	rightbgTC->setXPosition(centerbgTC->position.x + centerbgTC->width * centerbgTC->scale);
-	leftbgTC->setXPosition(centerbgTC->position.x - centerbgTC->width * centerbgTC->scale);
-
-	rightbgTC->setScaling(centerbgTC->scale);
-	leftbgTC->setScaling(centerbgTC->scale);
-
-	/*if (!eorLogic->CheckWinner())
-		std::cout << "Wow, a whif" << std::endl;*/
+	change_state();
+	current_state->logic();
 }
 
 void Game::render()
 {
 	SDL_RenderClear(renderer);
-	for(auto& b: backgroundGroup)
-	{
-		b->draw();
-	}
-	for (auto& p : playerGroup)
-	{
-		p->draw();
-	}
+	current_state->render();
 	SDL_RenderPresent(renderer);
 }
 
-void Game::handleEvents()
+void Game::handle_events()
 {
-	SDL_PollEvent(&event);
-
-	switch (event.type)
-	{
-	case SDL_QUIT:
-		isRunning = false;
-		break;
-
-	default:
-		break;
-	}
+	current_state->handle_events();
 }
 
 void Game::clean()
 {
 	SDL_DestroyWindow(window);
-	window = NULL;
+	window = nullptr;
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
 }
