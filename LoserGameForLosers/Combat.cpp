@@ -37,9 +37,9 @@ Combat::Combat(Manager * manager)
 	player_right.add_group(Game::group_players);
 
 	bg_logic = new Background(&player_left, &player_right, &background, PLAYER_MAX_RANGE);
-	processor = new CombatProcessor(&player_left, &player_right, &background);
+	/*processor = new CombatProcessor(&player_left, &player_right, &background);
 
-	processor->create_combat();
+	processor->create_combat();*/
 }
 
 Combat::~Combat()
@@ -67,8 +67,8 @@ void Combat::logic()
 	manager.refresh();
 	manager.update();
 
-	if (processor->tasks[processor->current_task]->do_work())
-		processor->next_process();
+	/*if (processor->tasks[processor->current_task]->do_work())
+		processor->next_process();*/
 }
 
 

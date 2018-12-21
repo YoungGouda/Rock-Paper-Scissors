@@ -19,6 +19,7 @@ BitmapFont font;
 
 bool Game::is_running = false;
 
+// needs to be moved to a .txt so I can update it while running
 std::vector<Character> characters{  Character(),
 									Character(0.6, Attack(0.7, 0.2, Whip), Attack(0.1, 1, Jump_Kick), Attack(0.2, 0.1, Grab), Attack(0, -0.2, Nothing), "arms", 0.9, "LongArms_full.png"),
 									Character(0.9, Attack(0.6, 0, Whip), Attack(0.2, 0.9, Jump_Kick), Attack(0.2, 0.5, Grab), Attack(0, -0.1, Nothing), "square", 0.8, "square_full.png"),
@@ -26,7 +27,6 @@ std::vector<Character> characters{  Character(),
 
 
 //State variables
-
 int Game::state_id = STATE_NULL;
 int next_state = STATE_NULL;
 
@@ -47,6 +47,7 @@ void Game::init(const char * window_title)
 	Game::game_settings->player1 = characters[1];
 	Game::game_settings->player2 = characters[2];
 
+	// needs to be moved to a single png, so I can gloat about effieciancy
 	Game::assets->add_texture("background", "western industrial.jpg");
 	Game::assets->add_texture("player left", Game::game_settings->player1.file_path);
 	Game::assets->add_texture("player right", Game::game_settings->player2.file_path);

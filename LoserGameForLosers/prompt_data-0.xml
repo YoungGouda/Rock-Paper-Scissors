@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
+<!-- $TexturePacker:SmartUpdate:d365de354d2a7393b61eb8efc015875e:9c8a77feef671ac0c1d8420b21a077f5:3da6673c51a26b674fe844fc6fc39d17$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+pX => x pos of the pivot point (relative to sprite width)
+pY => y pos of the pivot point (relative to sprite height)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+with polygon mode enabled:
+vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
+verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
+triangles  => sprite triangulation, 3 vertex indices per triangle
+-->
+<TextureAtlas imagePath="prompts.png" width="2012" height="502">
+    <sprite n="zero.png" x="1747" y="253" w="160" h="91" oX="0" oY="0" oW="100" oH="160" r="y"/>
+	<sprite n="one.png" x="607" y="366" w="152" h="71" oX="12" oY="4" oW="100" oH="160" r="y"/>
+    <sprite n="two.png" x="1713" y="346" w="147" h="93" oX="0" oY="2" oW="100" oH="160" r="y"/>
+    <sprite n="three.png" x="1909" y="157" w="92" h="146" oX="1" oY="11" oW="100" oH="160"/>
+    <sprite n="four.png" x="1747" y="157" w="159" h="94" oX="6" oY="1" oW="100" oH="160" r="y"/>
+    <sprite n="five.png" x="1071" y="414" w="141" h="75" oX="11" oY="6" oW="100" oH="160" r="y"/>
+    <sprite n="six.png" x="761" y="414" w="153" h="87" oX="2" oY="6" oW="100" oH="160" r="y"/>
+	<sprite n="seven.png" x="1862" y="346" w="90" h="142" oX="7" oY="9" oW="100" oH="160"/>
+    <sprite n="eight.png" x="607" y="290" w="152" h="74" oX="11" oY="6" oW="100" oH="160" r="y"/>
+	<sprite n="nine.png" x="916" y="414" w="153" h="75" oX="5" oY="0" oW="100" oH="160" r="y"/>
+    <sprite n="fight.png" x="1282" y="303" w="429" h="153" oX="194" oY="7" oW="800" oH="160"/>
+    <sprite n="miss.png" x="761" y="282" w="519" h="130" oX="112" oY="12" oW="800" oH="160"/>
+    <sprite n="player1matchwin.png" x="1" y="149" w="758" h="139" oX="31" oY="13" oW="800" oH="160"/>
+    <sprite n="player1wins.png" x="1443" y="1" w="568" h="154" oX="125" oY="5" oW="800" oH="160"/>
+    <sprite n="player2matchwin.png" x="1" y="1" w="774" h="146" oX="5" oY="14" oW="800" oH="160"/>
+    <sprite n="player2wins.png" x="1" y="290" w="604" h="152" oX="86" oY="8" oW="800" oH="160"/>
+    <sprite n="round.png" x="777" y="136" w="527" h="144" oX="60" oY="1" oW="600" oH="160"/>
+    <sprite n="selectattack.png" x="777" y="1" w="664" h="133" oX="53" oY="5" oW="800" oH="160"/>
+    <sprite n="stop.png" x="1306" y="157" w="439" h="144" oX="145" oY="0" oW="800" oH="160"/>
+</TextureAtlas>

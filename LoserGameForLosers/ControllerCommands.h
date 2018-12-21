@@ -6,6 +6,21 @@
 #include "Command.h"
 
 
+class CombatProcessor;
+
+class EndRoundCommand : public Command
+{
+	CombatProcessor * processor_;
+public:
+	EndRoundCommand(CombatProcessor * processor)
+		: processor_(processor)
+	{}
+	~EndRoundCommand()
+	{}
+
+	void execute(Entity * entity) override;
+};
+
 
 class MoveCommand : public Command
 {

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
+<!-- $TexturePacker:SmartUpdate:b22360a2f08d63ba92b6c2cdf8aa6faf:d487078eb28941fe95feb8e8e8fde5db:aa9c8d8c966373fa3b5562c1197316fe$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+pX => x pos of the pivot point (relative to sprite width)
+pY => y pos of the pivot point (relative to sprite height)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+with polygon mode enabled:
+vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
+verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
+triangles  => sprite triangulation, 3 vertex indices per triangle
+-->
+<TextureAtlas imagePath="textures-0.png" width="1020" height="1846">
+    <sprite n="background.png" x="1" y="643" w="800" h="600"/>
+    <sprite n="background2.png" x="1" y="1245" w="800" h="600"/>
+	<sprite n="background3.png" x="1" y="1" w="800" h="640"/>
+	<sprite n="arms_idle_1.png" x="929" y="1" w="90" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="arms_idle_2.png" x="905" y="1552" w="90" h="125" oX="0" oY="3" oW="128" oH="128"/>
+    <sprite n="arms_idle_3.png" x="928" y="261" w="91" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="arms_walk_left_1.png" x="921" y="1041" w="94" h="125" oX="1" oY="3" oW="128" oH="128"/>
+    <sprite n="arms_walk_left_2.png" x="924" y="651" w="94" h="128" oX="1" oY="0" oW="128" oH="128"/>
+    <sprite n="arms_walk_left_3.png" x="929" y="131" w="90" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="arms_walk_right_1.png" x="924" y="781" w="94" h="128" oX="1" oY="0" oW="128" oH="128"/>
+    <sprite n="arms_walk_right_2.png" x="907" y="1295" w="94" h="125" oX="1" oY="3" oW="128" oH="128"/>
+    <sprite n="arms_walk_right_3.png" x="927" y="391" w="90" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="fighter_idle_1.png" x="803" y="1419" w="100" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="fighter_idle_2.png" x="907" y="1168" w="103" h="125" oX="0" oY="3" oW="128" oH="128"/>
+    <sprite n="fighter_idle_3.png" x="924" y="911" w="94" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="fighter_walk_left_1.png" x="926" y="521" w="90" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="fighter_walk_left_2.png" x="803" y="1549" w="100" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="fighter_walk_left_3.png" x="803" y="1159" w="102" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="fighter_walk_right_1.png" x="803" y="1679" w="100" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="fighter_walk_right_2.png" x="905" y="1422" w="90" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="fighter_walk_right_3.png" x="803" y="1289" w="102" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="square_idle_1.png" x="803" y="651" w="119" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="square_idle_2.png" x="803" y="1037" w="116" h="120" oX="3" oY="12" oW="128" oH="128" r="y"/>
+    <sprite n="square_idle_3.png" x="803" y="391" w="122" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="square_walk_left_1.png" x="803" y="261" w="123" h="128" oX="2" oY="0" oW="128" oH="128"/>
+    <sprite n="square_walk_left_2.png" x="803" y="911" w="119" h="124" oX="0" oY="4" oW="128" oH="128"/>
+    <sprite n="square_walk_left_3.png" x="803" y="781" w="119" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="square_walk_right_1.png" x="803" y="1" w="124" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="square_walk_right_2.png" x="803" y="131" w="124" h="128" oX="0" oY="0" oW="128" oH="128"/>
+    <sprite n="square_walk_right_3.png" x="803" y="521" w="121" h="128" oX="0" oY="0" oW="128" oH="128"/>
+</TextureAtlas>

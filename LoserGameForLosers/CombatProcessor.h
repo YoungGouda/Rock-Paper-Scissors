@@ -48,6 +48,20 @@ struct CombatProcessor
 		tasks.push_back(new CleanUp(player_left_, player_right_, this));
 	}
 
+	void debug_end_round()
+	{
+		current_task = 0;
+		tasks.clear();
+		tasks.push_back(new Skip());
+		tasks.push_back(new ClearPrompts());
+		tasks.push_back(new EndOfRoundSequence(player_left_, player_right_, this));
+		tasks.push_back(new DrawAttackLines(player_left_, player_right_, 1000));
+		tasks.push_back(new DisplayPrompt("miss", "miss.png"));
+		tasks.push_back(new Delay(1000));
+		tasks.push_back(new ClearPrompts());
+		tasks.push_back(new CleanUp(player_left_, player_right_, this));
+	}
+
 	void end_of_round(Entity * winner)
 	{
 		tasks.clear();

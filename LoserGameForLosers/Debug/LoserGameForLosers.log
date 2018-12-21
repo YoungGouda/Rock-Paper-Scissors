@@ -1,61 +1,4 @@
-﻿  stdafx.cpp
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\constants.h(36): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\constants.h(40): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\constants.h(51): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\transformcomponent.h(26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\optionlinks.h(49): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\optionlinks.h(50): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\options.h(28): warning C4018: '<': signed/unsigned mismatch
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\options.h(31): warning C4018: '<': signed/unsigned mismatch
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\options.h(38): warning C4018: '<': signed/unsigned mismatch
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\options.h(40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\options.h(39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\options.h(43): warning C4018: '<': signed/unsigned mismatch
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\options.h(45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\options.h(44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\optionscomponent.h(43): warning C4018: '>': signed/unsigned mismatch
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\optionscomponent.h(52): warning C4018: '>': signed/unsigned mismatch
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\backgroundcomponent.h(47): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\backgroundcomponent.h(48): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\spritecomponent.h(84): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\spritecomponent.h(85): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\spritecomponent.h(90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\boxcomponent.h(91): warning C4018: '<': signed/unsigned mismatch
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\cursorcomponent.h(39): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\keyboardhandler.h(24): warning C4200: nonstandard extension used: zero-sized array in struct/union
-  c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\keyboardhandler.h(24): note: This member will be ignored by a defaulted constructor or copy/move assignment operator
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\collidercomponent.h(67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\collidercomponent.h(92): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\collidercomponent.h(95): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\collidercomponent.h(96): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\collidercomponent.h(99): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\collidercomponent.h(100): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\promptcomponent.h(31): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\promptcomponent.h(32): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\commonprocesses.h(22): warning C4018: '>=': signed/unsigned mismatch
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\transformationprocesses.h(62): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocesses.h(70): warning C4018: '>=': signed/unsigned mismatch
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocesses.h(82): warning C4244: 'return': conversion from 'Uint32' to 'float', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocesses.h(227): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocessor.h(10): warning C4099: 'CombatProcessor': type name first seen using 'class' now seen using 'struct'
-  c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocessor.h(9): note: see declaration of 'CombatProcessor'
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocessor.h(97): warning C4018: '<': signed/unsigned mismatch
-  AssetManager.cpp
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\ecs.h(94): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-  c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\assetmanager.cpp(23): note: see reference to function template instantiation 'T &Entity::add_component<CursorComponent,int,SDL_RendererFlip>(int &&,SDL_RendererFlip &&)' being compiled
-          with
-          [
-              T=CursorComponent
-          ]
-  Background.cpp
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\background.cpp(25): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\background.cpp(114): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-  BitmapFont.cpp
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\bitmapfont.cpp(188): warning C4018: '<': signed/unsigned mismatch
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\bitmapfont.cpp(226): warning C4018: '<': signed/unsigned mismatch
-  BitmapTexture.cpp
-  Collision.cpp
-  Combat.cpp
+﻿  Combat.cpp
 c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\ecs.h(94): warning C4244: 'argument': conversion from 'const int' to 'const float', possible loss of data
   c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combat.cpp(18): note: see reference to function template instantiation 'T &Entity::add_component<TransformComponent,const int&,const int&,const int&,const int&,const float&>(const int &,const int &,const int &,const int &,const float &)' being compiled
           with
@@ -68,28 +11,4 @@ c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\ecs.h(94): war
           [
               T=SpriteComponent
           ]
-  CombatProcesses.cpp
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocesses.cpp(110): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocesses.cpp(115): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocesses.cpp(128): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocesses.cpp(140): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  ECS.cpp
-  EndOfRound.cpp
-  Game.cpp
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\game.cpp(23): warning C4305: 'argument': truncation from 'double' to 'const float'
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\game.cpp(24): warning C4305: 'argument': truncation from 'double' to 'const float'
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\game.cpp(25): warning C4305: 'argument': truncation from 'double' to 'const float'
-  Main.cpp
-  Menu.cpp
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\ecs.h(94): warning C4244: 'argument': conversion from 'const int' to 'const float', possible loss of data
-  c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\menu.cpp(9): note: see reference to function template instantiation 'T &Entity::add_component<TransformComponent,const int&,const int&,const int&,const int&,const float&>(const int &,const int &,const int &,const int &,const float &)' being compiled
-          with
-          [
-              T=TransformComponent
-          ]
-  TextureManager.cpp
-  Timer.cpp
-  Vector2D.cpp
-  Generating Code...
-c:\users\dwads\source\repos\losergameforlosers\losergameforlosers\combatprocesses.cpp(143): warning C4715: 'EndOfRoundSequence::do_work': not all control paths return a value
   LoserGameForLosers.vcxproj -> C:\Users\dwads\source\repos\LoserGameForLosers\Debug\LoserGameForLosers.exe

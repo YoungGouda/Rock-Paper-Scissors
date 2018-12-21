@@ -214,6 +214,7 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Combat.cpp" />
     <ClCompile Include="CombatProcesses.cpp" />
+    <ClCompile Include="ControllerCommands.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="EndOfRound.cpp" />
     <ClCompile Include="Game.cpp" />

@@ -22,6 +22,12 @@
     <Filter Include="Header Files\Commands">
       <UniqueIdentifier>{ce39a474-6ec0-4331-9517-69032fd45449}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ECS\Game Components">
+      <UniqueIdentifier>{1cdd381c-bd51-4cf4-bcfd-8438b3113d64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ECS\Script Components">
+      <UniqueIdentifier>{7923bef0-bad6-4173-8f16-f2543934a57f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -235,6 +241,9 @@
     </ClCompile>
     <ClCompile Include="BitmapFont.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerCommands.cpp">
+      <Filter>Header Files\Commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

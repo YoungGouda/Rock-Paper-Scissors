@@ -31,7 +31,7 @@ public:
 		group_characters,
 		group_background,
 		group_prompts,
-		group_screens,
+		group_processor,
 		group_players,
 		group_cursors
 	};
